@@ -9,14 +9,18 @@ class Shared():
         self.counter = 0
         self.end = end
         self.elms = [0] * self.end
+        self.mutex = Mutex()
 
 
 def fnc_counter(shared):
     while True:
+        shared.mutex.lock()
         if shared.counter >= shared.end:
-            break
+            shared.mutex.unlock()
+            return
         shared.elms[shared.counter] += 1
         shared.counter += 1
+        shared.mutex.unlock()
 
 
 for i in range(10):
