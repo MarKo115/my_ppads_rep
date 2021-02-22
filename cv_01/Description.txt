@@ -1,0 +1,29 @@
+# Popis jednotlivých súborov pre cvičenie č. 1 z predmetu PPaDS #
+
+# Kostra (Basic code) pre všetky súbory je rovnaká, mení sa iba umiestnenie zámku Mutex. #
+# Basic code:	- z modulu fei.ppds som si importoval triedy Thread a Mutex
+		- z modulu collections som importoval Counter, ktorý používam ako histogram
+		- vytvoril som triedu Shared(), ktorá obsahuje atribúty counter (spoločné počítadlo),
+		end (veľkosť poľa), elms (celočíslené pole o veľkosti end s nulovými prvkami) a mutex (zámok),
+		tieto atribúty sa nastavujú v inicializačnej funkcii triedy Shared
+		- vytvoril som si funkciu fnc_counter(shared), ktorej vstupný parameter je objekt triedy Shared a budú ju vykonávať pracovné vlákna,
+		podľa zadania funkcia obsahuje nekonečný cyklus a v každej iterácií cyklu kontroluje či shared.counter nie je mimo veľkosti poľa,
+		inkrementujem hodnotu prvku zdieľaného poľa shared.elms na pozícii shared.counter a inkrementujem hodnotu zdieľaného počítadla
+		shared.counter
+		- telo samotného programu (riadok 26 - 34) je vytvorené na základe inštrukcií z cvičenia 1
+		- výskyt hodnôt mi spočíta Counter, ktorý mám importovaný z modulu collections
+
+
+# Súbor cv_01.py #
+- do funckie fnc_counter(shared) som pridal uzamknutie a odomknutie zámku, ktorý obsahuje trieda Shared
+- shared.mutex.lock() som vložil ako prvý príkaz po tom, čo program vstúpi do nekonečného cyklu, je to preto
+lebo v kritickej oblasti (oblasť medzi lock() a unlock()) pracujem so zdieľaným počítadlom shared.counter a chcem zabezpečiť to,
+aby žiadne iné vlákno nemalo prístup k inkrementácií prvku v poli alebo samotného počítadla a taktiež, aby nepristupovalo
+k tejto premennej, kým s ňou pracuje vlákno, ktoré spustilo uzamknutie
+- shared.mutex.unlock() som vložil do podmienky if, ktorá ak bude splnená ukončí funkciu fnc_counter(shared) a bez odomknutia zámku by mohlo dôjsť k deadlock-u,
+keďže vlákno, ktoré uzamklo zámok už ukončilo funkciu
+- keďže zámok uzamknem na začiatku iterácie v cykle, tak rovnako na konci iterácie musím zámok odomknúť, preto som po inkrementáciach vložil shared.mutex.unlock()
+- pri testovaní samotného programu som for cyklus spustil 10-krát a veľkosť poľa pre zdieľaný objekt shared bol 1_000_000, 10-krát som dosiahol výsledok: "Counter({1: 1000000})"
+
+
+
