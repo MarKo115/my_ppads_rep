@@ -27,7 +27,17 @@ keďže vlákno, ktoré uzamklo zámok už ukončilo funkciu
 
 
 # Súbor cv_01_v2.py #
-
+- do funkcie fnc_counter(shared) som pridal uzamknutie a odomknutie zámku Mutex, ktorý je premennou v triede Shared
+- shared.mutex.lock() som vložil po if podmienke, ktorá kontroluje či je zdieľané počítadlo shared.counter väčšie alebo rovné
+veľkosti zdieľaného poľa shared.elms
+- shared.mutex.unlock() som vložil po inkrementácií prvku v zdieľanom poli a taktiež inkrementácie zdieľaného počítadla
+- pri testovaní samotného programu som for cyklus spustil 10-krát s veľkosťou poľa 1_000_000 pre objekt triedy Shared
+- pri takomto umiestnení zámku mi každý druhýkrát vypísalo výsledok "Counter({1: 1000000})" a každý prvýkrát program vyhodil výnimku
+spolu s IndexError, kedy pri inkrementácií prvku v zdieľanom poli bola premenná shared.counter mimo veľkosti poľa
+- takéto správanie programu nastalo preto, lebo zámok neobsahoval kontrolnú podmienku if, ktorá overovala, či je zdieľané
+počítadlo shared.counter >= ako shared.end, iné vlákno mohlo pristúpiť k tejto podmienke a vyhodnotiť ju ako out-of-range
+práve v momente, kedy iné vlákno, ktoré malo zámok na inkrementáciách, inkrementovalo posledný možný prvok v poli
+- také umiestnenie zámku nie je optimálne
 
 
 # Súbor cv_01_v3.py #
