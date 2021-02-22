@@ -26,4 +26,18 @@ keďže vlákno, ktoré uzamklo zámok už ukončilo funkciu
 - pri testovaní samotného programu som for cyklus spustil 10-krát a veľkosť poľa pre zdieľaný objekt shared bol 1_000_000, 10-krát som dosiahol výsledok: "Counter({1: 1000000})"
 
 
+# Súbor cv_01_v2.py #
 
+
+
+# Súbor cv_01_v3.py #
+- do funkcie fnc_counter(shared) som pridal uzamknutie a odomknutie zámku, ktorý obsahuje trieda Shared
+- shared.mutex.lock() som vložil pred inkrementáciu zdieľanej premennej shared.counter
+- shared.mutex.unlock() som vložil po inkrementovaní premennej shared.counter
+- pri testovaní samotného programu som for cyklus spustil 10-krát s veľkosťou poľa 1_000_000 pre objekt triedy Shared, dosiahnuté výsledky boli zväčša:
+"Counter({1: 999999, 2: 1})"
+"Counter({1: 999997, 2: 2, 0: 1})"
+"Counter({1: 999999, 2: 1})" atď
+- dané umiestnenie zámku má na výsledky programu taký vplyv, že síce pri samotnom inkrementovaní shared.counter pracuje s touto premmenou
+iba jedno vlákno, ale pri inkrementácií prvku v poli na mieste shared.counter môže k tomu pristupovať viacero vlákien naraz a tým pádom dôjde k inkrementácií
+nejakého prvku viackrát než raz, prípadne sa nejaký prvok v poli neinkrementuje vôbec a preskočí sa, takéto umiestnenie zámku nie je optimálne
