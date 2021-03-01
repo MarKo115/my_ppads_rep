@@ -1,54 +1,42 @@
 # .py file for 2nd exercise
 # Exercise 3: Fibonacci Sequence
-from time import sleep
-from random import randint
-from fei.ppds import Thread, Mutex, Semaphore
-from fei.ppds import print
+from fei.ppds import Thread
+from fei.ppds import Mutex
+from fei.ppds import Semaphore
+from fei.ppds import Event
 
 
-class SimpleBarrier:
+class Shared:
     def __init__(self, n):
         self.N = n
         self.counter = 0
+        self.fibonacci = [0, 1] + [0] * n
+        self.threads = [0] * (n + 1)
         self.mutex = Mutex()
-        self.turnstile = Semaphore(0)
+        self.event = Event()
+        self.event.signal()
+        for j in range(n + 1):
+            self.threads[j] = Semaphore(0)
+        self.threads[0].signal(1)
 
-    def wait(self):
-        self.mutex.lock()
-        self.counter += 1
-        if self.counter == self.N:
-            self.counter = 0
-            self.turnstile.signal(self.N)
-        self.mutex.unlock()
-        self.turnstile.wait()
-
-
-def fnc_counter(arr, n):
-    sleep(randint(1, 10)/10)
-    tmp = arr[n] + arr[n - 1]
-    return tmp
+    def fnc_fibonacci_seq(self, pin):
+        self.threads[pin].wait()
+        self.fibonacci[pin + 2] = self.fibonacci[pin] + self.fibonacci[pin + 1]
+        self.threads[pin + 1].signal()
 
 
-def rendezvous(thread_name):
-    sleep(randint(1, 10) / 10)
-    print('rendezvous: Thread %d' % thread_name)
-
-
-def sequence(thread_id, barrier_1, barrier_2):
-    rendezvous(thread_id)
-    barrier_1.wait()
-    # vykonaj výpočet a pridaj prvok do poľa
-    # ...
-    barrier_2.wait()
+def sequence(thread_id, obj):
+    obj.fnc_fibonacci_seq(thread_id)
 
 
 r = 10
-threads = list()
-sb_1 = SimpleBarrier(r)
-sb_2 = SimpleBarrier(r)
+threads = [0] * r
+shared = Shared(r)
 for i in range(r):
-    t = Thread(sequence, i, sb_1, sb_2)
-    threads.append(t)
+    t = Thread(sequence, i, shared)
+    threads[i] = t
 
 for t in threads:
     t.join()
+
+print(shared.fibonacci)
