@@ -14,6 +14,7 @@ class Shared:
         self.threads = [0] * (n + 1)
         self.mutex = Mutex()
         self.event = Event()
+        self.event.signal()
         for j in range(n + 1):
             self.threads[j] = Semaphore(0)
         self.threads[0].signal(1)
@@ -24,14 +25,25 @@ class Shared:
         self.threads[pin + 1].signal()
 
     def fnc_fibonacci_event(self, pin):
-        pass
+        while True:
+            self.event.wait()
+            self.mutex.lock()
+            if self.counter == pin:
+                break
+            self.mutex.unlock()
+        self.mutex.unlock()
+        self.mutex.lock()
+        self.counter += 1
+        self.mutex.unlock()
+        self.fibonacci[pin + 2] = self.fibonacci[pin] + self.fibonacci[pin + 1]
+        self.event.signal()
 
 
 def sequence(thread_id, obj):
     # fibonacci sequence with semaphores
-    obj.fnc_fibonacci_seq(thread_id)
+    # obj.fnc_fibonacci_seq(thread_id)
     # fibonacci sequence with events
-    # obj.fnc_fibonacci_event(thread_id)
+    obj.fnc_fibonacci_event(thread_id)
 
 
 r = 10
