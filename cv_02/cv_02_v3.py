@@ -14,7 +14,6 @@ class Shared:
         self.threads = [0] * (n + 1)
         self.mutex = Mutex()
         self.event = Event()
-        self.event.signal()
         for j in range(n + 1):
             self.threads[j] = Semaphore(0)
         self.threads[0].signal(1)
@@ -24,17 +23,22 @@ class Shared:
         self.fibonacci[pin + 2] = self.fibonacci[pin] + self.fibonacci[pin + 1]
         self.threads[pin + 1].signal()
 
+    def fnc_fibonacci_event(self, pin):
+        pass
+
 
 def sequence(thread_id, obj):
+    # fibonacci sequence with semaphores
     obj.fnc_fibonacci_seq(thread_id)
+    # fibonacci sequence with events
+    # obj.fnc_fibonacci_event(thread_id)
 
 
 r = 10
 threads = [0] * r
 shared = Shared(r)
 for i in range(r):
-    t = Thread(sequence, i, shared)
-    threads[i] = t
+    threads[i] = Thread(sequence, i, shared)
 
 for t in threads:
     t.join()
