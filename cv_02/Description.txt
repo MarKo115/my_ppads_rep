@@ -1,0 +1,26 @@
+# Popis jednotlivých súborov pre cvičenie č. 2 z predmetu PPaDS #
+
+# Nakoľko sme úlohy 1 a 2 robili na semináry a rozoberali na prednáške nekomentujem ich v tomto súbore. #
+
+
+# Súbor cv_02_v3.py #
+- v tomto súbore sa nachádza moje riešenie fibonacciho postupnosti podľa zadania na cvičení
+- od riadku 49 - 58 je kód pre vytvorenie vlákien, zdieľanej premennej triedy Share, ktorú som si vytvoril a vypísanie fibonacciho postupnosti,
+pole postupnosti je uložené ako premenná v zdieľanej premennej shared, r predstavuje počet vlákien, ktoré budú postupnosť počítať
+a taktiež r posielam ako parameter pri inicializovaní objektu triedy Shared
+- trieda Shared obsahuje premenné N - počet vlákien, counter - počítadlo, fibonacci - pole fibonacciho postupnosti,
+threads - pole semafórov, mutex - zámok, event - udalosť
+- funkcia sequence je funkcia, ktorú vykonáva každé vlákno, pre spustenie výpočtu pomocou semafórov je potrebné zakomentovať funkciu
+fnc_fibonacci_event a odkomentovať funkciu fnc_fibonnaci_seq
+- pri inicializácií triedy Shared v poli self.threads nastavujem každý semafór na hodnotu 0 a prvému dám signál aby mohol vykonávať výpočet,
+keďže na žiadne z vlákien nečaká keďže ide ako prvý a začiatočné hodnoty 0, 1 mám pevne dané
+- počet semafórov, ktoré potrebujem je r + 1, kde r je počet vlákien, pretože pri samotnom výpočte fibonacciho postupnosti pomocou semafórov
+najprv dám wait(), potom vlákno, ktoré je v poradí vykoná výpočet pre i + 2 prvok a následne dávam signál semafóru na pozícií i + 1 v poli semafórov,
+že ďalšie vlákno môže vykonať výpočet, posledné vlákno, ktoré výpočet vykoná dá signál poslednému semafóru aby nič neostalo blokované,
+ak by semafórov bolo len r, dostanem výnimku out of range
+- pri riešení výpočtu pomocou udalostí v mojom riešení bolo potrebné použiť jednu premennú triedy Event a jeden Mutex
+- pri inicializácií som rovnako ako pri semafóre dal event.signal aby prvé vlákno mohlo začať s výpočtom,
+vo funkcii pre výpočet pomocou eventou najprv overím, či counter je rovný pin čo mi predstavuje číslo vlákna,
+ak ho nájdem zväčším counter o hodnotu 1, vypočítam číslo pre fibonacciho postupnosť na pozícií i + 2 a dám signál, že udalosť nastala
+a môže pokračovať ďalšie vlákno
+- z môjho pohľadu sa pri riešení tejto úlohy nejlepšie využívali semafóry
