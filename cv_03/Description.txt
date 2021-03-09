@@ -1,0 +1,12 @@
+# Popis súboru cv_03_lightswitch.py #
+- v tomto súbore sa nachádza moje riešenie pre model čítatelia a zapisovatelia
+- podľa commit správ si viete pozrieť postupné riešenie najprv bez vyhladovenia (bez použitia turniketu) a neskôr moju úpravu,
+kde som do triedy ADT_Lightswitch pridal turniket
+- na riadku 56 vidíte sleep, ktorý je pri mojom riešení pomocou turniketu dôležitý, hlavne preto, že sa aj iné vlákna dostanú k čítaniu a zapisovaniu,
+totižto 0. vlákno, ktoré zapisuje sa nezaradí do fronty čakajúcich vlákien a preto bude neustále zapisovať a žiadne iné vlákno sa nedostane ani k zápisu ani k čítaniu
+- aj takéto krátke oneskorenie sleep(0) vie spôsobiť, že sa k turniketu dostane čítateľ
+- pre čítateľov je i+50, kvôli tomu aby sme vedeli rozlíšiť, že sa jedná o iné vlákno ako samotné vlákno napríklad 0
+- úlohu som testoval na rozdielnom aj rovnakom počte vlákien, taktiež som si všimol, že ak vytváram najprv vlákna pre čítateľov a až potom pre zapisovateľov
+vždy najprv všetky vlákna prečítajú a až potom pokračujú zapisovatelia, v opačnom prípade to bolo tak, že pár vlákien zapísalo, opäť všetci čítatelia
+čítali a až po nich šli ostatné vlákna zapisovať
+
