@@ -22,3 +22,4 @@ ktorý vloží túto porciu do hrnca a ten istý kuchár signalizuje naplnenie h
 	- aby nedošlo k neočakávanej zmene pridal som chef_mutex, čo je zámok, ktorý uzamkne šéfkuchár, keď vkladá porciu do hrnca a signalizuje
 	naplnenie hrnca
 - do programu som pridal premennú C, ktorá obsahuje počet kuchárov, ktorý sú v kmeni
+- pseudokód pre toto riešenie je v súbore Pseudocode.txt
