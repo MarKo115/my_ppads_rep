@@ -1,0 +1,24 @@
+# Popis súboru dining_savages_v1.py #
+- v tomto súbore sa nachádza riešenie 1. modifikácie cvičenia č.5 z predmetu PPDS
+- túto modifikáciu sme programovali spoločne na cvičení
+- cvičenie už obsahuje popis aj riešenie tejto modifikácie
+
+# Popis súboru dining_savages_v2.py #
+- v tomto súbore sa nachádza moje riešenie 2. modifikácie problému hodujúcich divochov,
+keď kmeň má viacerých kuchárov a divoch zobudí všetkých, no len jeden vkladá porciu do hrnca
+- pri tomto probléme som nad tým uvažoval tak, že divoch síce zobudí všetkých kuchárov ale iba jeden kuchár je hlavný,
+ktorý vloží túto porciu do hrnca a ten istý kuchár signalizuje naplnenie hrnca, ostatný kuchári pomáhajú/pôjdu opäť spať
+- pri implementácií tejto modifikácie som využil pre kuchárov 2 bariéry
+- dining_savages_v2.py je modifikácia v1 s nasledujúcimi zmenami:
+	- v triede SharedObject som pridal premennú num_of_chefs, ktorá obsahuje počet kuchárov a pridal som 2 bariéry
+	- v triede SharedObject som si vytvoril funkciu wakeup(), ktorá slúži na zobudenie všetkých kuchárov
+	- chef_barrier slúži ako bariéra, kedy všetci kuchári spia, pri tejto bariére je inicializácia o 1 väčšia ako počet kuchárov,
+	pretože nechcem aby sa bariéra otvorila pri poslednom kuchárovi ale až, keď divoch všetkých zobudí
+	- divoch, ktorý zobudí kuchárov zavolá wait na bariéru chef_barrier a tým sa bariéra otvorí
+	- druhá bariéra chef_barrier2 počká na všetkých kuchárov, ktorý sa prebrali a postupne začnú vykonávať ďalší kód
+	- aby som zabezpečil, že iba jeden kuchár bude hlavný, vložil som podmienku if, kedy skontrolujem, či už divoch
+	signalizoval prázdny tanier, ak áno hlavný kuchár ide variť a vloží porciu do hrnca, ostatný kuchári pokračujú
+	a dostanú sa do bariéry chef_barrier a zase spia
+	- aby nedošlo k neočakávanej zmene pridal som chef_mutex, čo je zámok, ktorý uzamkne šéfkuchár, keď vkladá porciu do hrnca a signalizuje
+	naplnenie hrnca
+- do programu som pridal premennú C, ktorá obsahuje počet kuchárov, ktorý sú v kmeni
