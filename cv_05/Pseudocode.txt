@@ -1,0 +1,60 @@
+# Pseudocode for dining_savages_v2.py #
+def init():
+	mutex := Mutex()
+	chef_mutex := Mutex()
+	servings := 0
+	fullPot := Semaphore(0)
+	emptyPot := Semaphore(0)
+	
+	barrier1 := SimpleBarrier()
+	barrier2 := SimpleBarrier()
+
+	chef_barrier1 := SimpleBarrier()
+	chef_barrier2 := SimpleBarrier()
+
+	for savage_id in [0, 1, 2, ..., N-1]:
+		create_and_run_thread(savage, savage_id)
+	for chef_id in [0, 1, 2, ..., C-1]:
+		create_and_run_thread(cook)
+	
+def getServingFromPot(savage_id):
+	print("divoch %2d: beriem si porciu", savage_id)
+	servings := servings - 1
+
+def savage(savage_id):
+	while True:
+		barrier1.wait("divoch %2d: prisiel som na veceru, uz nas je %2d", savage_id, print_each_thread = True)
+		barrier2.wait("divoch %2d: uz sme vsetci, zaciname vecerat", savage_id, print_last_thread = True)
+		mutex.lock()
+		print("divoch %2d: pocet zostavajucich porcii v hrnci je %2d" % (savage_id, servings))
+		if servings == 0:
+			print("divoch %2d: budim kuchara" % savage_id)
+			wakeup()
+			emptyPot.signal()
+			fullPot.wait()
+		getServingFromPot(savage_id)
+		mutex.unlock()
+		print("divoch %2d: hodujem" % savage_id)
+
+def putServingsInPot():
+	print("kuchar: varim")
+	servings := M
+	
+def cook():
+	chef_mutex.lock()
+	putServingsInPot()
+	fullPot.signal()
+	chef_mutex.unlock()
+
+def chef(chef_id):
+	chef_barrier1.wait()
+	chef_barrier2.wait()
+	if empty_pot.value() == 1:
+		empty_pot.wait()
+		cook()
+	else:
+		continue
+
+def wakeup():
+	chef_barrier1.wait()
+
