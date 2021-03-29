@@ -1,0 +1,20 @@
+# Popis súboru barber_shop.py #
+- v tomto súbore sa nachádza moje riešenie synchronizačného problému "problém holičstva"
+- v histórií commitov si viete pozrieť moje riešenie s predbiehaním, kedy v kóde nebola použitá fronta queue
+zo zdieľanej premennej SharedObject
+- zdieľaná trieda SharedObject obsahuje premenné mutex, free_chairs (voľné stoličky v čakárni), queue (FIFO fronta)
+a 4 semafóry
+- premenná N označuje počet zákazníkov (počet vlákien zákazníkov)
+- premenná M označuje počet voľných stoličiek v čakárni (kapacitu čakárne)
+- vlákno zákazníka vykonáva funckiu customer() a vlákno holiča vykonáva funkciu barber()
+- vlákno zákazníka vo funkcii customer najprv pod zamknutým mutexom overí, či je v čakárni voľná stolička,
+ak áno obsadí ju, ak žiadna stolička voľná nie je zákazník vykoná funkciu balk(), ktorá simuluje, že zákazník odchádza bez ostrihania,
+po uplynutí sleep-u vo funkcii balk sa zákazník môže vrátiť a skontrolovať, či sa mu neuvoľnilo miesto v čakárni
+- zákazník, ktorý je v čakárni dá signál holičovi a vytvorí objekt triedy Helper (trieda Helper obsahuje premenné semafór a id zákazníka)
+- každý zákazník, ktorý príde do čakárne si vytvorí objekt triedy Helper, tento objekt zapíše do fronty v triede SharedObject
+a zavolá wait na tomto objekte
+- vlákno holiča čaká na signál od zákazníka, ak ho dostane pod zamknutým mutexom uvoľní jednu stoličku v čakárni, keďže
+jeden zákazník si šiel sadnúť do holičovho kresla
+- holič vezme prvého zákazníka, ktorý do holičstva prišiel a ostrihá ho
+- zákazník po ostrihaní signalizuje holičovi, že je spokojný a zaplatí
+- zákazník čaká na semafor barberDone a zavolá sleep (sleep simuluje rast vlasov, kedy môže vlákno X opäť navštíviť holiča)
