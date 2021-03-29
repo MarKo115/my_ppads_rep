@@ -3,6 +3,12 @@ from time import sleep
 from random import randint
 
 
+class Helper:
+    def __init__(self, c_id):
+        self.barber = Semaphore(0)
+        self.id = c_id
+
+
 class SharedObject:
     def __init__(self, n):
         self.mutex = Mutex()
@@ -22,8 +28,10 @@ def customer(customer_id, shared):
             shared.mutex.unlock()
 
             print(f"Customer {customer_id} arrived at the waiting room.")
+            hlp = Helper(customer_id)
             shared.customer.signal()
-            shared.barber.wait()
+            shared.queue.append(hlp)
+            hlp.barber.wait()
 
             get_hair_cut(customer_id)
 
@@ -42,10 +50,11 @@ def barber(shared):
 
         shared.mutex.lock()
         shared.free_chairs += 1
+        hlp = shared.queue.pop(0)
         shared.mutex.unlock()
 
-        shared.barber.signal()
-        cut_hair()
+        hlp.barber.signal()
+        cut_hair(hlp.id)
 
         shared.customerDone.wait()
         shared.barberDone.signal()
@@ -61,8 +70,8 @@ def balk(customer_id):
     sleep(randint(20, 40) / 10)
 
 
-def cut_hair():
-    print(f"The barber cuts and adjusts the customer's hair.")
+def cut_hair(customer_id):
+    print(f"The barber cuts and adjusts the customer {customer_id} hair.")
     sleep(0.5 + randint(0, 5) / 10)
 
 
@@ -79,7 +88,7 @@ def run_model(n, m):
 
 if __name__ == "__main__":
     N = 10
-    M = 2
+    M = 6
     run_model(N, M)
 
 
