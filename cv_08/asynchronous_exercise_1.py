@@ -13,7 +13,7 @@ async def request_greetings(name, work_queue):
             print(f"Task {name} getting URL: {url}")
             async with session.get(url) as response:
                 res = await response.text()
-            responses.append(res)
+                responses.append(res)
         texts = '\n'.join(responses)
         return texts
 
