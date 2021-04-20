@@ -40,7 +40,7 @@ async def request_book(url, sess):
 async def find_book(isbn, sess):
     response = await request_book(isbn, sess)
     parsed_response = prepare_output(response)
-    print(f"Response: {json.dumps(parsed_response)}")
+    print(f"Book: {json.dumps(parsed_response)}")
 
 
 async def main():
