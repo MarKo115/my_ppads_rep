@@ -1,0 +1,8 @@
+# Popis aplikácií my_synchronous_app.py a my_asynchronous_app.py #
+- cieľom týchto aplikácií je vyhľadávať knihu podľa ISBN čísla na stránke https://www.googleapis.com/books/v1/
+- na vyhľadávanie v googleapis za / dopíšeme volume?q=isbn: čo špecifikuje vyhľadávanie, v tejto api sa dá vyhľadávať kniha aj podľa autora, názvu a pod.
+- na obrazovku sa nám vypíše Response status a v prípade, že API nájde knihu podľa ISBN vypíše sa jej názov, autor a dátum vydania
+- pri spúšťaní asynchrónnej verzie aplikácie som dosiahol rýchlosť vykonania kódu "0.42719602584838867 seconds passed"
+- pri spustení synchrónnej verzie aplikácie som dosiahol rýchlosť "1.2111642360687256 seconds passed"
+- vidíme značne zrýchlenie pri asynchrónnej verzii, čo pri väčšom množstve ISBN čísel by veľmi ušetrilo čas a dostali by sme výsledok 3-krát rýchlejšie ako
+pri synchrónnej verzii
