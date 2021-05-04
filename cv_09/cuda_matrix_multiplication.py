@@ -1,6 +1,7 @@
 from numba import cuda
 import numpy
 import math
+from time import perf_counter
 
 
 # CUDA kernel
@@ -21,6 +22,8 @@ def matmul(A, B, C):
 A = numpy.full((24, 12), 3, numpy.float64)  # matrix containing all 3's
 B = numpy.full((12, 22), 4, numpy.float64)  # matrix containing all 4's
 
+t_start = perf_counter()
+
 # Copy the arrays to the device
 A_global_mem = cuda.to_device(A)
 B_global_mem = cuda.to_device(B)
@@ -40,6 +43,8 @@ matmul[blockspergrid, threadsperblock](A_global_mem, B_global_mem, C_global_mem)
 # Copy the result back to the host
 C = C_global_mem.copy_to_host()
 
+t_end = perf_counter()
 print(C)
+print('Total time: %f' % (t_end - t_start))
 
 
