@@ -1,0 +1,7 @@
+# Cuda matrix multiplication
+Total time: 1.862781
+
+# Cuda matrix multiplication using streams and events
+Total time: 0.659760
+Mean kernel duration (milliseconds): 1.783163
+Mean kernel standard deviation (milliseconds): 2.889414
